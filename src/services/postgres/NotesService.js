@@ -16,9 +16,11 @@ class NotesService {
     const createdAt = new Date().toISOString();
     const updatedAt = createdAt;
 
+    const formattedTags = JSON.stringify(tags);
+
     const query = {
       text: 'INSERT INTO notes VALUES($1, $2, $3, $4, $5, $6) RETURNING id',
-      values: [id, title, body, tags, createdAt, updatedAt],
+      values: [id, title, body, formattedTags, createdAt, updatedAt],
     };
 
     const result = await this._pool.query(query);
@@ -46,14 +48,19 @@ class NotesService {
       throw new NotFoundError('Catatan tidak ditemukan');
     }
 
-    return result.rows.map(mapDBToModel);
+    const note = result.rows[0];
+    note.tags = JSON.parse(note.tags);
+
+    // result.rows[0].tags = JSON.parse(result.rows[0].tags);
+    return result.rows.map(mapDBToModel)[0];
   }
 
   async editNoteById(id, { title, body, tags }) {
     const updatedAt = new Date().toISOString();
+    const formattedTags = JSON.stringify(tags);
     const query = {
-      text: 'UPDATE notes SET title = $1, body = $2, tags = $3, updated-at = $4 WHERE id = $5 RETURNING id',
-      values: [title, body, tags, updatedAt, id],
+      text: 'UPDATE notes SET title = $1, body = $2, tags = $3, updated_at = $4 WHERE id = $5 RETURNING id',
+      values: [title, body, formattedTags, updatedAt, id],
     };
 
     const result = await this._pool.query(query);
@@ -66,7 +73,7 @@ class NotesService {
   async deleteNoteById(id) {
     const query = {
       text: 'DELETE FROM notes WHERE id = $1 RETURNING id',
-      value: [id],
+      values: [id],
     };
 
     const result = await this._pool.query(query);
