@@ -42,6 +42,9 @@ class NotesHandler {
     const { id } = request.params;
     const note = await this._service.getNoteById(id);
 
+    // const noteTags = JSON.parse(note.tags);
+    // note.tags = noteTags;
+
     return {
       status: 'success',
       data: {
