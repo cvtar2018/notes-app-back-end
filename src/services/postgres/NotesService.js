@@ -1,5 +1,3 @@
-/* eslint-disable no-underscore-dangle */
-// eslint-disable-next-line import/no-extraneous-dependencies
 const { Pool } = require('pg');
 const { nanoid } = require('nanoid');
 const InvariantError = require('../../exceptions/InvariantError');
