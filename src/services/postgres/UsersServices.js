@@ -1,5 +1,6 @@
 const { Pool } = require('pg');
 const InvariantError = require('../../exceptions/InvariantError');
+const NotFoundError = require('../../exceptions/NotFoundError');
 const { nanoid } = require('nanoid');
 const bcrypt = require('bcrypt');
 
@@ -11,7 +12,6 @@ class UsersServices {
   async addUser({ username, password, fullname }) {
     // TODO: Verifikasi username, pastikan belum terdaftar.
     // TODO: Bila verifikasi lolos, makan masukkan user baru ke database.
-    console.log(username, password, fullname);
 
     await this.verifyNewUsername(username);
 
@@ -25,7 +25,7 @@ class UsersServices {
     const result = await this._pool.query(query);
 
     if (!result.rows.length) {
-      throw new InvariantError('User gagal ditambahkan');
+      throw new InvariantError('Gagal menambahkan user');
     }
 
     // this is a must because we need it in testing: to fill the $currentUserId
@@ -41,7 +41,7 @@ class UsersServices {
     const result = await this._pool.query(query);
 
     if (result.rows.length > 0) {
-      throw new InvariantError('Gagal menambahkan user. Username sudah digunakan');
+      throw new InvariantError('Gagal menambahkan user. Username sudah digunakan.');
     }
   }
 
@@ -53,7 +53,7 @@ class UsersServices {
     const result = await this._pool.query(query);
 
     if (!result.rows.length) {
-      throw new InvariantError('Id gagal ditemukan');
+      throw new NotFoundError('User tidak ditemukan');
     }
 
     return result.rows[0];
