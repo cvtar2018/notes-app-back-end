@@ -2,4 +2,9 @@ NOTES APP BACK END APPLICATION
 
 BY DICODING
 
-## TODO: Wed 19 morning
+## TODO:
+
+Friday, Feb 28
+Fixing testing issue:
+
+1. After collaboration record deleted, GET and PUT request still working
